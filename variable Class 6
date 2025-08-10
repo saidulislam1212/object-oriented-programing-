@@ -1,0 +1,21 @@
+package VariableClass6;
+
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        float[] sales = new float[7];
+        float AllSales = 0;
+        Scanner sc = new Scanner(System.in);
+
+        for (int i = 0; i < 7; i++) {
+            System.out.print("Enter the sales for day " + (i + 1) + ": ");
+            sales[i] = sc.nextFloat();
+            AllSales += sales[i];
+        }
+        float averageSales = AllSales / 7;
+
+        System.out.println("Total sales for the week: " + AllSales);
+        System.out.println("Average sales for the week: " + averageSales);
+    }
+}

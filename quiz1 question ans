@@ -1,0 +1,81 @@
+import java.io.*;
+import java.util.*;
+
+public class StudentScoreProcessor {
+    public static void main(String[] args) {
+        String inputFileName = "Students.txt";
+        String outputFileName = "StudentId_results.txt";
+
+       
+        List<StudentRecord> studentRecords = new ArrayList<>();
+        double totalScore = 0;
+        int count = 0;
+
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 2) {
+                    String name = parts[0].trim();
+                    int score = Integer.parseInt(parts[1].trim());
+                    studentRecords.add(new StudentRecord(name, score));
+                    totalScore += score;
+                    count++;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: Input file not found.");
+            return;
+        } catch (IOException e) {
+            System.out.println("Error reading from input file.");
+            return;
+        }
+
+      
+        double averageScore = (count > 0) ? totalScore / count : 0;
+
+        
+        int topScore = studentRecords.stream().mapToInt(StudentRecord::getScore).max().orElse(0);
+        List<StudentRecord> topScorers = new ArrayList<>();
+        for (StudentRecord record : studentRecords) {
+            if (record.getScore() == topScore) {
+                topScorers.add(record);
+            }
+        }
+
+       
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName))) {
+            writer.write("Average Score: " + String.format("%.2f", averageScore));
+            writer.newLine();
+            writer.write("Top Scorer(s): ");
+            writer.newLine();
+            for (StudentRecord record : topScorers) {
+                writer.write(record.getName() + " - " + record.getScore());
+                writer.newLine();
+            }
+            System.out.println("Results written to " + outputFileName);
+        } catch (IOException e) {
+            System.out.println("Error writing to output file.");
+        }
+    }
+}
+
+
+class StudentRecord {
+    private final String name;
+    private final int score;
+
+    public StudentRecord(String name, int score) {
+        this.name = name;
+        this.score = score;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getScore() {
+        return score;
+    }
+}
